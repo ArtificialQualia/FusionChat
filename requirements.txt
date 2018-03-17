@@ -1,2 +1,2 @@
 PyQt5==5.10.1
-discord.py==0.16.12
+git+https://github.com/Rapptz/discord.py.git@rewrite#egg=discord.py

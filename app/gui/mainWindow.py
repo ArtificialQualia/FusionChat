@@ -37,7 +37,7 @@ class Ui_MainWindow(object):
         self.serverTree.setBaseSize(QtCore.QSize(0, 0))
         self.serverTree.setToolTipDuration(-1)
         self.serverTree.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.serverTree.setIndentation(0)
+        self.serverTree.setIndentation(10)
         self.serverTree.setHeaderHidden(False)
         self.serverTree.setColumnCount(1)
         self.serverTree.setObjectName("serverTree")
@@ -100,10 +100,14 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.actionQuit = QtWidgets.QAction(MainWindow)
         self.actionQuit.setObjectName("actionQuit")
+        self.actionAddServer = QtWidgets.QAction(MainWindow)
+        self.actionAddServer.setObjectName("actionAddServer")
+        self.menuFile.addAction(self.actionAddServer)
         self.menuFile.addAction(self.actionQuit)
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
+        self.actionQuit.triggered.connect(MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -112,4 +116,5 @@ class Ui_MainWindow(object):
         self.serverTree.headerItem().setText(0, _translate("MainWindow", "Servers"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.actionQuit.setText(_translate("MainWindow", "Quit"))
+        self.actionAddServer.setText(_translate("MainWindow", "Add Server"))
 
