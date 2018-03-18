@@ -2,9 +2,9 @@ import logging
 import discord
 import asyncio
 from app.app import FusionChat
-import app.server
-import app.channel
-import app.message
+from app.server import Server
+from app.channel import Channel
+from app.message import Message
 
 class DiscordClient(discord.Client):
     
@@ -19,42 +19,53 @@ class DiscordClient(discord.Client):
 
     async def on_ready(self):
         logging.info('Logged into Discord as ' + self.user.name + '(' + str(self.user.id) + ')')
+        self._populateServerTree()
+            
+    def _populateServerTree(self):
         for server in self.guilds:
-            serverObject = app.server.Server(server.name)
+            qServer = Server(name=server.name)
             for channel in server.channels:
                 if channel.__class__.__name__ == "CategoryChannel":
-                    channelObject = app.channel.Channel(name=channel.name, id=channel.id)
-                    serverObject.addChannel(channelObject)
+                    qChannel = Channel(parent=qServer, name=channel.name, id=channel.id)
+                    qServer.addChannel(qChannel)
             for channel in server.channels:
                 if channel.__class__.__name__ == "TextChannel":
+                    sendFunc = lambda m, c=channel:self.sendMessage(c, m)
                     foundCategory = False
-                    for category in serverObject.channels:
+                    for category in qServer.channels:
                         if channel.category_id == category.id:
-                            channelObject = app.channel.Channel(name=channel.name, id=channel.id)
-                            category.subchannels.append(channelObject)
+                            qChannel = Channel(parent=category, name=channel.name, id=channel.id, sendMessage=sendFunc)
+                            category.subchannels.append(qChannel)
                             foundCategory = True
                     if not foundCategory:
-                        channelObject = app.channel.Channel(name=channel.name, id=channel.id)
-                        serverObject.addChannel(channelObject)
+                        qChannel = Channel(parent=qServer, name=channel.name, id=channel.id, sendMessage=sendFunc)
+                        qServer.addChannel(qChannel)
                 elif channel.__class__.__name__ == "VoiceChannel":
                     continue
                 elif channel.__class__.__name__ == "CategoryChannel":
-                    pass
+                    continue
                 else:
                     logging.error("channel type not handled: " + channel.__class__.__name__)
-            self.signaler.addServer.emit(serverObject)
-            self.servers.append(serverObject)
+            self.signaler.addServer.emit(qServer)
+            self.servers.append(qServer)
         
     async def on_message(self, message):
-        print(message.content)
+        logging.debug('message received: ' + message.content)
         for server in self.servers:
             for channel in server.channels:
                 self._findMessageDestination(message, channel)
-        self.signaler.updateText.emit(message.content)
+        #self.signaler.updateText.emit(message.content)
         
     def _findMessageDestination(self, message, channel):
         if message.channel.id == channel.id:
-            messageObj = app.message.Message(sender=message.author.nick, text=message.content, timeStamp=message.created_at)
-            channel.addMessage(messageObj)
+            sender = message.author.nick
+            if sender == None:
+                sender = message.author.name
+            messageObj = Message(sender=sender, text=message.content, timeStamp=message.created_at)
+            self.signaler.addMessage.emit(channel, messageObj)
         for subchannel in channel.subchannels:
             self._findMessageDestination(message, subchannel)
+            
+    def sendMessage(self, channel, message):
+        #channel.send(content=message)
+        logging.debug('sent message: ' + message)

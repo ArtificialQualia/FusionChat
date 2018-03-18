@@ -18,7 +18,10 @@ class FusionChat(QtWidgets.QMainWindow, mainWindow.Ui_MainWindow, QtCore.QObject
         self.signaler.updateText.connect(self.writeMessage)
         self.signaler.addServer.connect(self.addServer)
         self.actionAddServer.triggered.connect(self.showServerDialog)
+        self.serverTree.itemSelectionChanged.connect(self.serverTreeSelectionChanged)
+        self.signaler.addMessage.connect(lambda c, m:c.addMessage(self.plainTextEdit, m))
         
+        self.messageInput.keyPressEvent = self.keyPressMessageInput
         self.serverLine.mouseMoveEvent = self.dragServerLine
         
     def dragServerLine(self, event):
@@ -34,20 +37,26 @@ class FusionChat(QtWidgets.QMainWindow, mainWindow.Ui_MainWindow, QtCore.QObject
         dialog.exec()
         
     def addServer(self, server):
-        qServer = QtWidgets.QTreeWidgetItem(self.serverTree)
-        for channel in server.channels:
-            qChannel = QtWidgets.QTreeWidgetItem(qServer)
-            qChannel.setText(0, channel.name)
-            qServer.addChild(qChannel)
-            qChannel.setExpanded(True)
-            for subchannel in channel.subchannels:
-                qSubchannel = QtWidgets.QTreeWidgetItem(qChannel)
-                qSubchannel.setText(0, subchannel.name)
-                qChannel.addChild(qSubchannel)
-                qSubchannel.setExpanded(True)
-        qServer.setText(0, server.name)
-        qServer.setExpanded(True)
-        self.serverTree.addTopLevelItem(qServer)
+        self.serverTree.addTopLevelItem(server)
+        self.serverTree.expandAll()
+        
+    def serverTreeSelectionChanged(self):
+        try:
+            self.serverTree.selectedItems()[0].selected(self.plainTextEdit)
+        except IndexError:
+            pass
+        
+    def keyPressMessageInput(self, event):
+        key = event.key()
+        if key == QtCore.Qt.Key_Return : 
+            try:
+                selectedChannel = self.serverTree.selectedItems()[0]
+                selectedChannel.sendMessage(self.messageInput.toPlainText())
+                self.messageInput.clear()
+            except IndexError:
+                pass
+        else:
+            QtWidgets.QPlainTextEdit.keyPressEvent(self.messageInput, event)
         
 class AddServerDialog(QtWidgets.QDialog, addServerDialog.Ui_Dialog):
     def __init__(self, parent=None):
