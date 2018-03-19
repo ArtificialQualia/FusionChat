@@ -27,5 +27,7 @@ class Channel(QtWidgets.QTreeWidgetItem):
             self.displayMessage(messageDisplay, message)
             
     def displayMessage(self, messageDisplay, message):
-        messageDisplay.appendPlainText("[" + message.timeStamp.isoformat() + "] " + message.sender + ": " + message.text)
-        messageDisplay.verticalScrollBar().setSliderPosition(messageDisplay.verticalScrollBar().maximum())
+        marginText = "margin-top: 0px; margin-bottom: 0px; margin-right: 0px; margin-left:20px;"
+        indentedParagraph = "<p style=\" "+marginText+" text-indent:-20px;\">"
+        messageFixedLines = message.text.replace("\n", "</p><p style=\" "+marginText+" text-indent:-10px;\">")
+        messageDisplay.append(indentedParagraph + "[" + message.timeStamp.isoformat() + "] <b>" + message.sender + "</b>: " + messageFixedLines + "</p>")

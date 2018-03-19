@@ -5,7 +5,8 @@ import copy
 
 class SettingsHandler(object):
     default = { "windowX": 100, "windowY": 100,
-                 "windowHeight": 500, "windowWidth": 750
+                 "windowHeight": 500, "windowWidth": 750,
+                 "auth": []
                 }
     def __init__(self):
         if (platform.system() == "Windows"):

@@ -1,20 +1,27 @@
 import logging
 import discord
 import asyncio
-from app.app import FusionChat
+#import app.app
 from app.server import Server
 from app.channel import Channel
 from app.message import Message
 
 class DiscordClient(discord.Client):
     
-    def __init__(self, signaler=None, *args, **kwargs):
+    def __init__(self, signaler=None, token=None, *args, **kwargs):
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+        
         super(DiscordClient, self).__init__(*args, **kwargs)
         self.signaler = signaler
         self.servers = []
+        self.token = token
+        
+        asyncio.ensure_future(self.connectDiscord(self.loop))
+        self.loop.run_forever()
         
     async def connectDiscord(self, loop):
-        await asyncio.ensure_future(self.login(FusionChat.settings.getSettings()['discord'], bot=False))
+        await asyncio.ensure_future(self.login(self.token, bot=False))
         loop.create_task(self.connect())
 
     async def on_ready(self):
@@ -67,5 +74,6 @@ class DiscordClient(discord.Client):
             self._findMessageDestination(message, subchannel)
             
     def sendMessage(self, channel, message):
-        #channel.send(content=message)
+        future = asyncio.run_coroutine_threadsafe(channel.send(content=message), self.loop)
+        #need to handle rate limiting
         logging.debug('sent message: ' + message)
