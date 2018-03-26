@@ -27,10 +27,15 @@ class DiscordClient(discord.Client):
     async def on_ready(self):
         logging.info('Logged into Discord as ' + self.user.name + '(' + str(self.user.id) + ')')
         self._populateServerTree()
+        
+    def getNick(self, guildID):
+        for server in self.guilds:
+            if server.id == guildID:
+                return server.me.nick if server.me.nick != None else server.me.name
             
     def _populateServerTree(self):
         for server in self.guilds:
-            qServer = Server(name=server.name)
+            qServer = Server(name=server.name, id=server.id, getNick=self.getNick)
             for channel in server.channels:
                 if channel.__class__.__name__ == "CategoryChannel":
                     qChannel = Channel(parent=qServer, name=channel.name, id=channel.id)

@@ -11,14 +11,15 @@ from app.apiClients import *
 
 class FusionChat(QtWidgets.QMainWindow, mainWindow.Ui_MainWindow, QtCore.QObject):
     
+    styleSheet = "p { margin-top: 0px; margin-bottom: 0px; margin-right: 0px; margin-left:0px; } \
+    body {margin-top: 1px; margin-bottom: 1px; margin-right: 1px; margin-left:1px; }"
     settings = app.settingsHandler.SettingsHandler()
     
     def __init__(self, parent=None, signaler=None):
         super(FusionChat, self).__init__(parent)
         self.setupUi(self)
         self.messageDisplay.document().setDocumentMargin(0)
-        self.messageDisplay.document().setDefaultStyleSheet("p { text-indent:20px; }")
-        self.messageDisplay.append("test")
+        self.messageDisplay.document().setDefaultStyleSheet(self.styleSheet)
         self.signaler = signaler
         self.signaler.addServer.connect(self.addServer)
         self.actionAddServer.triggered.connect(self.showServerDialog)
@@ -49,7 +50,7 @@ class FusionChat(QtWidgets.QMainWindow, mainWindow.Ui_MainWindow, QtCore.QObject
         
     def serverTreeSelectionChanged(self):
         try:
-            self.serverTree.selectedItems()[0].selected(self.messageDisplay)
+            self.serverTree.selectedItems()[0].selected(self)
         except IndexError:
             pass
         

@@ -28,7 +28,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="1,0,0,0">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="1,0,0,0,0">
     <property name="sizeConstraint">
      <enum>QLayout::SetMinimumSize</enum>
     </property>
@@ -50,6 +50,22 @@
     <property name="verticalSpacing">
      <number>3</number>
     </property>
+    <item row="2" column="3">
+     <widget class="QPlainTextEdit" name="messageInput">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>25</height>
+       </size>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0" rowspan="3">
      <widget class="QTreeWidget" name="serverTree">
       <property name="sizePolicy">
@@ -157,22 +173,13 @@
      </widget>
     </item>
     <item row="2" column="2">
-     <widget class="QPlainTextEdit" name="messageInput">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>40</height>
-       </size>
+     <widget class="QLabel" name="nickLabel">
+      <property name="text">
+       <string>nick</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
+    <item row="0" column="2" colspan="2">
      <widget class="QTextEdit" name="messageDisplay">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
@@ -185,6 +192,9 @@
         <width>16777215</width>
         <height>16777215</height>
        </size>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOn</enum>
       </property>
      </widget>
     </item>
