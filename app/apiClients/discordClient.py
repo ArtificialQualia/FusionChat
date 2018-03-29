@@ -25,17 +25,20 @@ class DiscordClient(discord.Client):
         loop.create_task(self.connect())
 
     async def on_ready(self):
-        logging.info('Logged into Discord as ' + self.user.name + '(' + str(self.user.id) + ')')
+        logging.info('Logged into Discord as ' + self.user.name + ' (' + str(self.user.id) + ')')
         self._populateServerTree()
         
     def getNick(self, guildID):
         for server in self.guilds:
             if server.id == guildID:
                 return server.me.nick if server.me.nick != None else server.me.name
+        return self.user.name
             
     def _populateServerTree(self):
+        topLevelName = "Discord (" + self.user.name + ")"
+        qTopLevelServer = Server(name=topLevelName, id=0, getNick=self.getNick)
         for server in self.guilds:
-            qServer = Server(name=server.name, id=server.id, getNick=self.getNick)
+            qServer = Server(parent=qTopLevelServer, name=server.name, id=server.id, getNick=self.getNick)
             for channel in server.channels:
                 if channel.__class__.__name__ == "CategoryChannel":
                     qChannel = Channel(parent=qServer, name=channel.name, id=channel.id)
@@ -58,8 +61,8 @@ class DiscordClient(discord.Client):
                     continue
                 else:
                     logging.error("channel type not handled: " + channel.__class__.__name__)
-            self.signaler.addServer.emit(qServer)
             self.servers.append(qServer)
+        self.signaler.addServer.emit(qTopLevelServer)
         
     async def on_message(self, message):
         logging.debug('message received: ' + message.content)

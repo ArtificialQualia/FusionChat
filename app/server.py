@@ -8,9 +8,13 @@ class Server(QtWidgets.QTreeWidgetItem):
         self.setText(0, name)
         self.channels = []
         self.getNick = getNick
+        self.servers = []
         
     def addChannel(self, channel):
         self.channels.append(channel)
+        
+    def addServer(self, server):
+        self.servers.append(server)
         
     def selected(self, window):
         window.nickLabel.setText(self.getNick(self.id))
