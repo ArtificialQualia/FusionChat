@@ -7,7 +7,7 @@ from app.message import Message
 class SlackClient(slackclient.SlackClient):
     
     def __init__(self, signaler=None, token=None, *args, **kwargs):
-        super(SlackClient, self).__init__(token, *args, **kwargs)
+        super(SlackClient, self).__init__(token)
         self.signaler = signaler
         self.servers = []
         self.token = token

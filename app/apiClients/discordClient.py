@@ -12,7 +12,7 @@ class DiscordClient(discord.Client):
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
         
-        super(DiscordClient, self).__init__(*args, **kwargs)
+        super(DiscordClient, self).__init__()
         self.signaler = signaler
         self.servers = []
         self.token = token

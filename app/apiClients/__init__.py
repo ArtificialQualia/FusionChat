@@ -1,1 +1,1 @@
-__all__ = ["discordClient", "slackClient"]
+__all__ = ["discordClient", "slackClient", "ircClient"]

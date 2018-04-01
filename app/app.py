@@ -32,7 +32,7 @@ class FusionChat(QtWidgets.QMainWindow, mainWindow.Ui_MainWindow, QtCore.QObject
         for auth in self.settings.getSettings()['auth']:
             apiModule = getattr(sys.modules[__name__], auth['apiModuleName'])
             apiClass = getattr(apiModule, auth['apiClassName'])
-            t = Thread(target=lambda: apiClass(signaler=signaler, token=auth['token']), daemon=True)
+            t = Thread(target=lambda: apiClass(signaler=signaler, **auth), daemon=True)
             t.start()
         
     def dragServerLine(self, event):

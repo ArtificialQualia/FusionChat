@@ -1,3 +1,4 @@
 PyQt5==5.10.1
 git+https://github.com/Rapptz/discord.py.git@rewrite#egg=discord.py
 slackclient==1.2.0
+irc==16.2.1
