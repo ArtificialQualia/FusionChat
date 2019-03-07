@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets, QtGui
+import datetime
 
 class Channel(QtWidgets.QTreeWidgetItem):
     redBrush = QtGui.QBrush(QtGui.QColor('red'))
@@ -31,4 +32,6 @@ class Channel(QtWidgets.QTreeWidgetItem):
             
     def displayMessage(self, messageDisplay, message):
         messageFixedLines = message.text.replace("\n", "</p><p>")
-        messageDisplay.append("<p>" + "[" + message.timeStamp.isoformat() + "] <b>" + message.sender + "</b>: " + messageFixedLines + "</p>")
+        messageMicroseconds = datetime.timedelta(microseconds=message.timeStamp.microsecond)
+        message.timeStamp = message.timeStamp - messageMicroseconds
+        messageDisplay.append("<p>" + "[" + message.timeStamp.isoformat(' ') + "] <b>" + message.sender + "</b>: " + messageFixedLines + "</p>")

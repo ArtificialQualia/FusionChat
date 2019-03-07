@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\mainWindow.ui'
+# Form implementation generated from reading ui file '.\app\gui\mainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.10.1
 #
@@ -89,6 +89,9 @@ class Ui_MainWindow(object):
         self.messageDisplay.setSizePolicy(sizePolicy)
         self.messageDisplay.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.messageDisplay.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.messageDisplay.setUndoRedoEnabled(False)
+        self.messageDisplay.setCursorWidth(0)
+        self.messageDisplay.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByKeyboard|QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextBrowserInteraction|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
         self.messageDisplay.setObjectName("messageDisplay")
         self.gridLayout.addWidget(self.messageDisplay, 0, 2, 1, 2)
         self.gridLayout.setColumnStretch(0, 1)

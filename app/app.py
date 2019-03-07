@@ -6,14 +6,13 @@ import app.gui.mainWindow as mainWindow
 import app.gui.addServer as addServerDialog
 import app.server
 import app.channel
-import app.settingsHandler
+from app.settingsHandler import settings
 from app.apiClients import *
 
 class FusionChat(QtWidgets.QMainWindow, mainWindow.Ui_MainWindow, QtCore.QObject):
     
     styleSheet = "p { margin-top: 0px; margin-bottom: 0px; margin-right: 0px; margin-left:0px; } \
     body {margin-top: 1px; margin-bottom: 1px; margin-right: 1px; margin-left:1px; }"
-    settings = app.settingsHandler.SettingsHandler()
     
     def __init__(self, parent=None, signaler=None):
         super(FusionChat, self).__init__(parent)
@@ -29,7 +28,7 @@ class FusionChat(QtWidgets.QMainWindow, mainWindow.Ui_MainWindow, QtCore.QObject
         self.messageInput.keyPressEvent = self.keyPressMessageInput
         self.serverLine.mouseMoveEvent = self.dragServerLine
         
-        for auth in self.settings.getSettings()['auth']:
+        for auth in settings.getSettings()['auth']:
             apiModule = getattr(sys.modules[__name__], auth['apiModuleName'])
             apiClass = getattr(apiModule, auth['apiClassName'])
             t = Thread(target=lambda: apiClass(signaler=signaler, **auth), daemon=True)
@@ -72,5 +71,5 @@ class AddServerDialog(QtWidgets.QDialog, addServerDialog.Ui_Dialog):
         self.setupUi(self)
     
     def accept(self):
-        FusionChat.settings.setSettings(discord=self.tokenInput.text())
+        settings.setSettings(discord=self.tokenInput.text())
         QtWidgets.QDialog.accept(self)

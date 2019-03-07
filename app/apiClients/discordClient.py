@@ -1,6 +1,7 @@
 import logging
 import discord
 import asyncio
+import html
 #import app.app
 from app.server import Server
 from app.channel import Channel
@@ -76,7 +77,8 @@ class DiscordClient(discord.Client):
             sender = message.author.nick
             if sender == None:
                 sender = message.author.name
-            messageObj = Message(sender=sender, text=message.content, timeStamp=message.created_at)
+            htmlSafeMessage = html.escape(message.content)
+            messageObj = Message(sender=sender, text=htmlSafeMessage, timeStamp=message.created_at)
             self.signaler.addMessage.emit(channel, messageObj)
         for subchannel in channel.subchannels:
             self._findMessageDestination(message, subchannel)

@@ -42,3 +42,4 @@ class SettingsHandler(object):
         json.dump(self.settings, settingsFile, indent=4)
         settingsFile.close()
     
+settings = SettingsHandler()
